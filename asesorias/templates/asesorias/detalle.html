@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle: {{ servicio.titulo }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-slate-800 font-sans antialiased">
+    
+    <nav class="bg-blue-800 shadow-lg mb-8">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-white">Impulsa PIE</h1>
+            <a href="{% url 'inicio' %}" class="text-blue-200 hover:text-white transition-colors">&larr; Volver al inicio</a>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full mb-4">
+            Modalidad: {{ servicio.get_modalidad_display }}
+        </span>
+        
+        <h2 class="text-3xl font-extrabold text-slate-900 mb-6">{{ servicio.titulo }}</h2>
+        
+        <div class="prose max-w-none text-slate-700 mb-8 leading-relaxed">
+            {{ servicio.descripcion|force_escape|linebreaks }}
+        </div>
+
+        <hr class="mb-8 border-gray-100">
+
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+    <h3 class="text-lg font-bold mb-2 text-slate-900">¿Necesitas esta asesoría para tu institución?</h3>
+    
+    {% if user.is_authenticated %}
+        <p class="text-sm text-gray-600 mb-4">Al presionar el botón, se agendará la sesión con tu perfil de usuario.</p>
+        
+        <form action="{% url 'agendar_reserva' servicio.id %}" method="post">
+            {% csrf_token %}
+            
+            <div class="mb-4 text-left">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Notas u observaciones para la asesoría:</label>
+                <textarea name="notas_cliente" rows="3" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Describe brevemente la situación o requerimiento de tu equipo PIE..."></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-800 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                Confirmar y Agendar Asesoría
+            </button>
+        </form>
+    {% else %}
+        <p class="text-sm text-amber-700 mb-4 font-medium">⚠️ Debes tener una cuenta activa para poder agendar servicios en la plataforma.</p>
+        <a href="{% url 'login' %}?next={{ request.path }}" class="block w-full bg-slate-800 text-white font-bold py-3 px-8 rounded-lg text-center hover:bg-slate-700 transition-colors">
+            Iniciar Sesión para Agendar
+        </a>
+    {% endif %}
+</div>
+    </main>
+
+</body>
+</html>
